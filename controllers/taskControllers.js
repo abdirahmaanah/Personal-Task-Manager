@@ -93,3 +93,15 @@ exports.updateTask = (req, res) => {
             status: fields.status || tasks[taskIndex].status,
             image: image ? `/uploads/${image.originalFilename}` : tasks[taskIndex].image,
         }
+        tasks[taskIndex] = updatedTask;
+
+        writeTasksToFile(tasks);
+
+        if(image) {
+            copyFileSync(image.filepath, path.join(__dirname, '../uploads', image.originalFilename));
+        }
+
+        res.writeHead(200, { 'content-type': 'application/json'});
+        res.end(JSON.stringify(updatedTask))
+    })
+}
